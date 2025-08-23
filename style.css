@@ -1,0 +1,47 @@
+@font-face {
+    font-family: "SVN-CodersCrux";
+    src: url("fonts/SVN-Coder's Crux.otf") format("opentype");
+    font-weight: normal;
+    font-style: normal;
+}
+
+body {
+    font-family: "SVN-CodersCrux", sans-serif;
+    font-size: 18px;
+    line-height: 1.6;
+    cursor: url('./cursor/pixel-art-patrick-star-and-spongebob-cursor.png'), auto;
+}
+
+body::before {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: url('https://i.pinimg.com/1200x/34/b4/95/34b49509fad1a914d38dd6c6a0e8f3af.jpg');
+    background-size: cover;
+    background-position: center;
+    filter: blur(30px) brightness(0.7);
+    z-index: -1;
+}
+
+.playlist-play-button,
+.playlist-play-button button {
+    cursor: url('./cursor/pixel-art-patrick-star-and-spongebob-pointer.png'), pointer;
+}
+
+input,
+textarea {
+    cursor: text;
+}
+
+h2 {
+    font-family: "SVN-CodersCrux", sans-serif;
+}
+
+.playlist-item:hover {
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    transform: scale(1.02);
+    background-color: #f9fafb;
+}
