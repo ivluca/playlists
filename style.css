@@ -10,6 +10,10 @@ body {
     font-size: 18px;
     line-height: 1.6;
     cursor: url('./cursor/pixel-art-patrick-star-and-spongebob-cursor.png'), auto;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
 }
 
 body::before {
