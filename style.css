@@ -1,3 +1,4 @@
+/* Font face */
 @font-face {
     font-family: "SVN-CodersCrux";
     src: url("fonts/SVN-Coder's Crux.otf") format("opentype");
@@ -5,31 +6,44 @@
     font-style: normal;
 }
 
+/* Root variables for easy tweaking */
+:root {
+    --burst-min: 12;
+    --burst-max: 25;
+    --octopus-min: 1;
+    --octopus-max: 4;
+    --burst-gap: 10000ms;
+
+    --rise-min: 8s;
+    --rise-max: 18s;
+
+    --bubble-min: 10px;
+    --bubble-max: 40px;
+    --octopus-min-size: 90px;
+    --octopus-max-size: 140px;
+}
+
+/* Global */
 body {
     font-family: "SVN-CodersCrux", sans-serif;
     font-size: 18px;
     line-height: 1.6;
     cursor: url('./cursor/pixel-art-patrick-star-and-spongebob-cursor.png'), auto;
-    -webkit-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
     user-select: none;
+    overflow: hidden;
 }
 
+/* Background blur */
 body::before {
     content: "";
     position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-image: url('https://i.pinimg.com/1200x/34/b4/95/34b49509fad1a914d38dd6c6a0e8f3af.jpg');
-    background-size: cover;
-    background-position: center;
+    inset: 0;
+    background: url('https://i.pinimg.com/1200x/34/b4/95/34b49509fad1a914d38dd6c6a0e8f3af.jpg') center/cover no-repeat;
     filter: blur(30px) brightness(0.7);
     z-index: -1;
 }
 
+/* Cursor override */
 .playlist-play-button,
 .playlist-play-button button {
     cursor: url('./cursor/pixel-art-patrick-star-and-spongebob-pointer.png'), pointer;
@@ -40,12 +54,56 @@ textarea {
     cursor: text;
 }
 
+/* Typography */
 h2 {
     font-family: "SVN-CodersCrux", sans-serif;
 }
 
+/* Playlist hover effect */
 .playlist-item:hover {
-    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
+        0 4px 6px -2px rgba(0, 0, 0, 0.05);
     transform: scale(1.02);
     background-color: #f9fafb;
+}
+
+/* Floating stage (bubbles + octopus) */
+.stage {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 1000;
+}
+
+.bubble,
+.octopus {
+    position: absolute;
+    will-change: transform, opacity;
+}
+
+.bubble {
+    background: url("./library/soap-bubble-animation.gif") no-repeat center/contain;
+    opacity: 0.85;
+}
+
+.octopus {
+    background: url("./library/octopus-animation.gif") no-repeat center/contain;
+}
+
+@keyframes rise-up {
+    from {
+        transform: var(--octopus-rotation, rotate(0deg)) translateY(0);
+    }
+    to {
+        transform: var(--octopus-rotation, rotate(0deg)) translateY(calc(-100vh - 200px));
+    }
+}
+
+@keyframes fall-down {
+    from {
+        transform: var(--octopus-rotation, rotate(0deg)) translateY(0);
+    }
+    to {
+        transform: var(--octopus-rotation, rotate(0deg)) translateY(calc(100vh + 200px));
+    }
 }
