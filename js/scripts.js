@@ -1,29 +1,75 @@
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+
+const SUPABASE_URL = "https://usmfqjuniptwehgkiflp.supabase.co";
+const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVzbWZxanVuaXB0d2VoZ2tpZmxwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTcxNTQ3NzcsImV4cCI6MjA3MjczMDc3N30.azadza5uTpRlLpdlwoPr9siwt9MYnVK_zZptfenMils";
+
+const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
 async function loadPlaylists() {
-    const res = await fetch("playlists.json");
-    const playlists = await res.json();
+  const CACHE_KEY = "playlists_cache";
+  const CACHE_TTL = 1000 * 60 * 13; 
 
-    const container = document.getElementById("playlist-container");
+  const now = Date.now();
 
-    playlists.forEach(pl => {
-        const item = document.createElement("div");
-        item.className = ` flex items-center justify-between bg-white rounded-xl shadow p-4 transition-all duration-300 ease-in-out playlist-item `;
+  const cached = localStorage.getItem(CACHE_KEY);
+  if (cached) {
+    const { data, timestamp } = JSON.parse(cached);
 
-        item.innerHTML = `
-            <div class="flex items-center space-x-3 min-w-0" tabindex="-1">
-                <img src="point.png" alt="YouTube" class="w-7 h-7 flex-shrink-0 align-middle" tabindex="-1">
-                <span class="font-medium truncate flex-grow min-w-0 pe-2 leading-tight align-middle" tabindex="-1">${pl.title}</span>
-            </div>
-            <a href="${pl.link}" target="_blank" class="playlist-play-button" tabindex="-1">
-                <button 
-                    class="px-4 py-1 rounded-lg text-sm font-semibold border border-gray-300 flex-shrink-0 text-red-600 hover:bg-red-50 hover:scale-105 transition duration-300" 
-                    tabindex="0">
-                    Play
-                </button>
-            </a>
-        `;
+    if (now - timestamp < CACHE_TTL) {
+      console.log("⚡ Load playlists from cache");
+      renderPlaylists(data);
+      return;
+    } else {
+      localStorage.removeItem(CACHE_KEY);
+    }
+  }
 
-        container.appendChild(item);
-    });
+  console.log("🌐 Fetch playlists from Supabase");
+  const { data: playlists, error } = await supabase
+    .from("playlists")
+    .select("*");
+
+  if (error) {
+    console.error("❌ Error loading playlists:", error);
+    return;
+  }
+
+  localStorage.setItem(CACHE_KEY, JSON.stringify({
+    data: playlists,
+    timestamp: now
+  }));
+
+  renderPlaylists(playlists);
+}
+
+function renderPlaylists(playlists) {
+  const container = document.getElementById("playlist-container");
+  container.innerHTML = "";
+
+  playlists.forEach(pl => {
+    const item = document.createElement("div");
+    item.className = `flex items-center justify-between bg-white rounded-xl shadow p-4 transition-all duration-300 ease-in-out playlist-item`;
+
+    item.innerHTML = `
+      <div class="flex items-center space-x-3 min-w-0" tabindex="-1">
+          <img src="./library/point.png" alt="YouTube" class="w-7 h-7 flex-shrink-0 align-middle" tabindex="-1">
+          <a href="${pl.url}" target="_blank" 
+              class="font-medium truncate flex-grow min-w-0 pe-2 leading-tight align-middle text-blue-600 hover:underline url-link"
+              tabindex="-1">
+              ${pl.name}
+          </a>
+      </div>
+      <a href="${pl.url}" target="_blank" class="playlist-play-button" tabindex="-1">
+          <button 
+              class="px-4 py-1 rounded-lg text-sm font-semibold border border-gray-300 flex-shrink-0 text-red-600 hover:bg-red-50 hover:scale-105 transition duration-300" 
+              tabindex="0">
+              Play
+          </button>
+      </a>
+    `;
+
+    container.appendChild(item);
+  });
 }
 
 document.addEventListener("DOMContentLoaded", () => {

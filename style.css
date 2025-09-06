@@ -1,11 +1,3 @@
-/* Font face */
-@font-face {
-    font-family: "SVN-CodersCrux";
-    src: url("fonts/SVN-Coder's Crux.otf") format("opentype");
-    font-weight: normal;
-    font-style: normal;
-}
-
 /* Root variables for easy tweaking */
 :root {
     --burst-min: 12;
@@ -23,10 +15,18 @@
     --octopus-max-size: 140px;
 }
 
+/* Font face */
+@font-face {
+    font-family: "SVN-CodersCrux";
+    src: url("fonts/SVN-Coder's Crux.otf") format("opentype");
+    font-weight: normal;
+    font-style: normal;
+}
+
 /* Global */
 body {
     font-family: "SVN-CodersCrux", sans-serif;
-    font-size: 18px;
+    font-size: 20px;
     line-height: 1.6;
     cursor: url('./cursor/pixel-art-patrick-star-and-spongebob-cursor.png'), auto;
     user-select: none;
@@ -43,15 +43,15 @@ body::before {
     z-index: -1;
 }
 
-/* Cursor override */
+/* Custom cursors */
 .playlist-play-button,
 .playlist-play-button button {
     cursor: url('./cursor/pixel-art-patrick-star-and-spongebob-pointer.png'), pointer;
 }
 
-input,
-textarea {
-    cursor: text;
+.url-link {
+    color: black !important;
+    cursor: url('./cursor/pixel-art-patrick-star-and-spongebob-cursor.png'), auto;
 }
 
 /* Typography */
