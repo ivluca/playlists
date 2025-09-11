@@ -30,7 +30,6 @@ body {
     line-height: 1.6;
     cursor: url('./cursor/pixel-art-patrick-star-and-spongebob-cursor.png'), auto;
     user-select: none;
-    overflow: hidden;
 }
 
 /* Background blur */
