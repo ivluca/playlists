@@ -7,7 +7,7 @@ const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 async function loadPlaylists() {
   const CACHE_KEY = "playlists_cache";
-  const CACHE_TTL = 1000 * 60 * 13; 
+  const CACHE_TTL = 1000 * 60 * 13;
 
   const now = Date.now();
 
@@ -27,7 +27,8 @@ async function loadPlaylists() {
   console.log("🌐 Fetch playlists from Supabase");
   const { data: playlists, error } = await supabase
     .from("playlists")
-    .select("*");
+    .select("*")
+    .order("order", { ascending: true });
 
   if (error) {
     console.error("❌ Error loading playlists:", error);
@@ -73,43 +74,43 @@ function renderPlaylists(playlists) {
 }
 
 document.addEventListener("DOMContentLoaded", () => {
-    loadPlaylists();
+  loadPlaylists();
 
-    const albumVideo = document.getElementById('album-video');
-    const albumMediaContainer = document.getElementById('album-media-container');
-    const fallbackImageUrl = 'https://i.pinimg.com/736x/1a/31/0c/1a310c40c5ff58f701f02fd4e372998c.jpg';
+  const albumVideo = document.getElementById('album-video');
+  const albumMediaContainer = document.getElementById('album-media-container');
+  const fallbackImageUrl = 'https://i.pinimg.com/736x/1a/31/0c/1a310c40c5ff58f701f02fd4e372998c.jpg';
 
-    function handleVideoError() {
-        if (!albumMediaContainer) {
-            console.error('error xyz.');
-            return;
-        }
-
-        const imgFallback = document.createElement('img');
-        imgFallback.src = fallbackImageUrl;
-        imgFallback.className = 'w-full h-full object-cover';
-
-        albumMediaContainer.innerHTML = '';
-        albumMediaContainer.appendChild(imgFallback);
+  function handleVideoError() {
+    if (!albumMediaContainer) {
+      console.error('error xyz.');
+      return;
     }
 
-    if (albumVideo) {
-        albumVideo.addEventListener('error', handleVideoError);
-        if (albumVideo.networkState === HTMLMediaElement.NETWORK_EMPTY || albumVideo.networkState === HTMLMediaElement.NETWORK_NO_SOURCE) {
-            handleVideoError();
-        }
-    } else {
-        handleVideoError();
+    const imgFallback = document.createElement('img');
+    imgFallback.src = fallbackImageUrl;
+    imgFallback.className = 'w-full h-full object-cover';
+
+    albumMediaContainer.innerHTML = '';
+    albumMediaContainer.appendChild(imgFallback);
+  }
+
+  if (albumVideo) {
+    albumVideo.addEventListener('error', handleVideoError);
+    if (albumVideo.networkState === HTMLMediaElement.NETWORK_EMPTY || albumVideo.networkState === HTMLMediaElement.NETWORK_NO_SOURCE) {
+      handleVideoError();
     }
+  } else {
+    handleVideoError();
+  }
 });
 
 document.addEventListener("contextmenu", e => e.preventDefault());
 
 document.addEventListener("keydown", e => {
-    if (e.key === "F12" ||
-        (e.ctrlKey && e.shiftKey && e.key === "I") ||
-        (e.ctrlKey && e.shiftKey && e.key === "J") ||
-        (e.ctrlKey && e.key === "U")) {
-        e.preventDefault();
-    }
+  if (e.key === "F12" ||
+    (e.ctrlKey && e.shiftKey && e.key === "I") ||
+    (e.ctrlKey && e.shiftKey && e.key === "J") ||
+    (e.ctrlKey && e.key === "U")) {
+    e.preventDefault();
+  }
 });
