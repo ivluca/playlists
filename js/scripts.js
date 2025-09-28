@@ -16,7 +16,7 @@ async function loadPlaylists() {
     const { data, timestamp } = JSON.parse(cached);
 
     if (now - timestamp < CACHE_TTL) {
-      console.log("⚡ Load playlists from cache");
+      console.log("Load playlists from cache");
       renderPlaylists(data);
       return;
     } else {
@@ -24,11 +24,11 @@ async function loadPlaylists() {
     }
   }
 
-  console.log("🌐 Fetch playlists from Supabase");
+  console.log("Fetch playlists from Supabase");
   const { data: playlists, error } = await supabase
     .from("playlists")
     .select("*")
-    .order("order", { ascending: true });
+    .order("sort_order", { ascending: true });
 
   if (error) {
     console.error("❌ Error loading playlists:", error);
@@ -73,8 +73,75 @@ function renderPlaylists(playlists) {
   });
 }
 
+async function loadSocials() {
+  const CACHE_KEY = "socials_cache";
+  const CACHE_TTL = 1000 * 60 * 13; // 13 phút
+
+  const now = Date.now();
+
+  const cached = localStorage.getItem(CACHE_KEY);
+  if (cached) {
+    const { data, timestamp } = JSON.parse(cached);
+
+    if (now - timestamp < CACHE_TTL) {
+      console.log("Load socials from cache");
+      renderSocials(data);
+      return;
+    } else {
+      localStorage.removeItem(CACHE_KEY);
+    }
+  }
+
+  console.log("Fetch socials from Supabase");
+  const { data: socials, error } = await supabase
+    .from("socials")
+    .select("name, url")
+    .order("sort_order", { ascending: true });
+
+  if (error) {
+    console.error("Error loading socials:", error);
+    return;
+  }
+
+  localStorage.setItem(CACHE_KEY, JSON.stringify({
+    data: socials,
+    timestamp: now
+  }));
+
+  renderSocials(socials);
+}
+
+function renderSocials(socials) {
+  const container = document.getElementById("socials-container");
+  if (!container) return;
+
+  container.innerHTML = "";
+
+  socials.forEach(sc => {
+    const link = document.createElement("a");
+    link.href = sc.url;
+    link.target = "_blank";
+    link.className = "social-link text-blue-300 hover:underline mx-2";
+    link.textContent = sc.name;
+
+    container.appendChild(link);
+  });
+}
+
 document.addEventListener("DOMContentLoaded", () => {
   loadPlaylists();
+  loadSocials();
+
+  const reloadBtn = document.getElementById("reload-btn");
+  reloadBtn.addEventListener("click", () => {
+    reloadBtn.classList.add("spin-once");
+
+    reloadBtn.addEventListener("animationend", () => {
+      reloadBtn.classList.remove("spin-once");
+    }, { once: true });
+
+    forceReload();
+  });
 
   const albumVideo = document.getElementById('album-video');
   const albumMediaContainer = document.getElementById('album-media-container');
@@ -104,13 +171,28 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 });
 
-document.addEventListener("contextmenu", e => e.preventDefault());
+async function forceReload() {
+  console.log("Force reload from Supabase...");
 
-document.addEventListener("keydown", e => {
-  if (e.key === "F12" ||
-    (e.ctrlKey && e.shiftKey && e.key === "I") ||
-    (e.ctrlKey && e.shiftKey && e.key === "J") ||
-    (e.ctrlKey && e.key === "U")) {
-    e.preventDefault();
-  }
-});
+  localStorage.removeItem("playlists_cache");
+  localStorage.removeItem("socials_cache");
+
+  await Promise.all([
+    loadPlaylists(),
+    loadSocials()
+  ]);
+
+  console.log("Reload completed!");
+}
+
+
+document.addEventListener("contextmenu", e => e.preventDefault()); ``
+
+// document.addEventListener("keydown", e => {
+//   if (e.key === "F12" ||
+//     (e.ctrlKey && e.shiftKey && e.key === "I") ||
+//     (e.ctrlKey && e.shiftKey && e.key === "J") ||
+//     (e.ctrlKey && e.key === "U")) {
+//     e.preventDefault();
+//   }
+// });

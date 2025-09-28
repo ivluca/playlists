@@ -53,6 +53,10 @@ body::before {
     cursor: url('./cursor/pixel-art-patrick-star-and-spongebob-cursor.png'), auto;
 }
 
+.social-link {
+    cursor: url('./cursor/pixel-art-patrick-star-and-spongebob-cursor.png'), pointer;
+}
+
 /* Typography */
 h2 {
     font-family: "SVN-CodersCrux", sans-serif;
@@ -93,6 +97,7 @@ h2 {
     from {
         transform: var(--octopus-rotation, rotate(0deg)) translateY(0);
     }
+
     to {
         transform: var(--octopus-rotation, rotate(0deg)) translateY(calc(-100vh - 200px));
     }
@@ -102,7 +107,22 @@ h2 {
     from {
         transform: var(--octopus-rotation, rotate(0deg)) translateY(0);
     }
+
     to {
         transform: var(--octopus-rotation, rotate(0deg)) translateY(calc(100vh + 200px));
     }
+}
+
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.spin-once {
+    animation: spin 0.7s ease-in-out;
 }
