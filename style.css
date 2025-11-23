@@ -28,7 +28,6 @@ body {
     font-family: "SVN-CodersCrux", sans-serif;
     font-size: 20px;
     line-height: 1.6;
-    cursor: url('./cursor/pixel-art-patrick-star-and-spongebob-cursor.png'), auto;
     user-select: none;
 }
 
@@ -42,19 +41,8 @@ body::before {
     z-index: -1;
 }
 
-/* Custom cursors */
-.playlist-play-button,
-.playlist-play-button button {
-    cursor: url('./cursor/pixel-art-patrick-star-and-spongebob-pointer.png'), pointer;
-}
-
 .url-link {
     color: black !important;
-    cursor: url('./cursor/pixel-art-patrick-star-and-spongebob-cursor.png'), auto;
-}
-
-.social-link {
-    cursor: url('./cursor/pixel-art-patrick-star-and-spongebob-cursor.png'), pointer;
 }
 
 /* Typography */
@@ -70,59 +58,6 @@ h2 {
     background-color: #f9fafb;
 }
 
-/* Floating stage (bubbles + octopus) */
-.stage {
-    position: fixed;
-    inset: 0;
-    pointer-events: none;
-    z-index: 1000;
-}
-
-.bubble,
-.octopus {
-    position: absolute;
-    will-change: transform, opacity;
-}
-
-.bubble {
-    background: url("./library/soap-bubble-animation.gif") no-repeat center/contain;
-    opacity: 0.85;
-}
-
-.octopus {
-    background: url("./library/octopus-animation.gif") no-repeat center/contain;
-}
-
-@keyframes rise-up {
-    from {
-        transform: var(--octopus-rotation, rotate(0deg)) translateY(0);
-    }
-
-    to {
-        transform: var(--octopus-rotation, rotate(0deg)) translateY(calc(-100vh - 200px));
-    }
-}
-
-@keyframes fall-down {
-    from {
-        transform: var(--octopus-rotation, rotate(0deg)) translateY(0);
-    }
-
-    to {
-        transform: var(--octopus-rotation, rotate(0deg)) translateY(calc(100vh + 200px));
-    }
-}
-
-@keyframes spin {
-    from {
-        transform: rotate(0deg);
-    }
-
-    to {
-        transform: rotate(360deg);
-    }
-}
-
-.spin-once {
-    animation: spin 0.7s ease-in-out;
+.refresh-playlist:hover {
+    color: aqua;
 }
