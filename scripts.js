@@ -1,4 +1,4 @@
-import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import {createClient} from "https://esm.sh/@supabase/supabase-js@2";
 
 // Constants
 const SUPABASE_URL = "https://usmfqjuniptwehgkiflp.supabase.co";
@@ -16,7 +16,7 @@ const cache = {
             const cached = localStorage.getItem(key);
             if (!cached) return null;
 
-            const { data, timestamp } = JSON.parse(cached);
+            const {data, timestamp} = JSON.parse(cached);
             return Date.now() - timestamp < CACHE_TTL ? data : null;
         } catch (e) {
             console.error("Cache read error:", e);
@@ -26,7 +26,7 @@ const cache = {
 
     set(key, data) {
         try {
-            localStorage.setItem(key, JSON.stringify({ data, timestamp: Date.now() }));
+            localStorage.setItem(key, JSON.stringify({data, timestamp: Date.now()}));
         } catch (e) {
             console.error("Cache write error:", e);
         }
@@ -46,17 +46,17 @@ async function loadPlaylists() {
     }
 
     try {
-        const { data: playlists, error } = await supabase
+        const {data: playlists, error} = await supabase
             .from("playlists")
             .select("*")
-            .order("sort_order", { ascending: true });
+            .order("sort_order", {ascending: true});
 
         if (error) throw error;
 
         cache.set(CACHE_KEY, playlists);
         renderPlaylists(playlists);
     } catch (error) {
-        console.error("❌ Error loading playlists:", error);
+        console.error("Error loading playlists:", error);
     }
 }
 
